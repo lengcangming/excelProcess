@@ -40,7 +40,6 @@ public class WriteExcel {
         OutputStream out = null;
         try {
             // 获取总列数
-            
             int columnNumCount = cloumnCount;
             // 读取Excel文档
             File finalXlsxFile = new File(finalXlsxPath);
