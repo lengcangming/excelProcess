@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author MWJ 2020/3/8
@@ -24,33 +26,56 @@ public class ReadExcel {
     public static void main(String[] args) {
         ReadExcel obj = new ReadExcel();
         // 此处为我创建Excel路径：E:/zhanhj/studysrc/jxl下
-//        File file = new File("D:/excel/1.xlsx");
-//        List<AliInfo> excelList = obj.readAliExcel(file);
-//        for (AliInfo aliInfo : excelList) {
-//            System.out.println(aliInfo);
-//        }
-        File file2 =new File("D:/excel/2.xlsx");
-        List<HuaweiInfo> huaweiExcelList=obj.readHuaweiExcel(file2);
-        for (HuaweiInfo huaweiInfo : huaweiExcelList) {
-            System.out.println(huaweiInfo);
+        File file = new File("D:/excel/1.xlsx");
+        List<AliInfo> excelList = obj.readAliExcel(file);
+        File file2 = new File("D:/excel/2.xlsx");
+        List<HuaweiInfo> huaweiExcelList = obj.readHuaweiExcel(file2);
+        Stream<AliInfo> stream = excelList.stream();
+        List<AliInfo> filterAliList = stream.filter(s -> (s.getStatus2().equals("生产中") || s.getStatus2().equals("已发货"))).collect(Collectors.toList());
+        for (AliInfo aliInfo : filterAliList) {
+            System.out.println(aliInfo);
+            String strProjectNo = aliInfo.getProjectNo();
+            String strModel = aliInfo.getModel();
+            String strNum = aliInfo.getNum();
+            List<HuaweiInfo> filterHuaweiList = huaweiExcelList.stream().
+                    filter(s -> s.getProjectNo().equals(strProjectNo)).collect(Collectors.toList());
+            for (HuaweiInfo huaweiInfo : filterHuaweiList) {
+                String strHuaweiProjectNo=huaweiInfo.getProjectNo();
+                String strHuaweiMode=huaweiInfo.getModel();
+                String strHuaweiNum=huaweiInfo.getNum();
+                if(strHuaweiProjectNo.equals(strProjectNo)&&strHuaweiMode.equals(strModel)&&strHuaweiNum.equals(strNum)){
+                    String strHuaweiPONo=huaweiInfo.getPONo();
+                    if(strHuaweiPONo!=null||strHuaweiNum.length()>0){
+                        aliInfo.setPONo(strHuaweiPONo);
+                        aliInfo.setPOIssueDate(huaweiInfo.getPOIssueDate());
+                    }
+                    if(huaweiInfo.getExpectedCompletionDateOfGoodsPreparation()<aliInfo.getExtensionDate()){
+
+                    }
+                }
+            }
         }
     }
+
+
 
     private List<HuaweiInfo> readHuaweiExcel(File file2) {
         try {
             InputStream is = new FileInputStream(file2.getAbsolutePath());
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
             // Read the Sheet
+            List<HuaweiInfo> outerList = new ArrayList<>();
             for (int numSheet = 0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++) {
-                if(numSheet==2||numSheet==3){
+                if (numSheet == 2 || numSheet == 3) {
                     XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
                     if (xssfSheet == null) {
                         continue;
                     }
-                    List<HuaweiInfo> outerList = new ArrayList();
                     HuaweiInfo huaweiInfo = null;
                     // Read the Row
                     for (int i = 1; i <= xssfSheet.getLastRowNum(); i++) {
+//                        System.out.println(xssfSheet.getPhysicalNumberOfRows());
+//                        System.out.println(xssfSheet.getLastRowNum());
                         XSSFRow xssfRow = xssfSheet.getRow(i);
                         if (xssfRow != null) {
                             huaweiInfo = new HuaweiInfo();
@@ -58,9 +83,9 @@ public class ReadExcel {
                             outerList.add(huaweiInfo);
                         }
                     }
-                    return outerList;
                 }
             }
+            return outerList;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,7 +117,7 @@ public class ReadExcel {
         huaweiInfo.setHuaweiContractNumber(getValue(huaweiContractNumber));
         huaweiInfo.setItemName(getValue(itemName));
         huaweiInfo.setModel(getValue(model));
-        huaweiInfo.setModel(getValue(num));
+        huaweiInfo.setNum(getValue(num));
         huaweiInfo.setShippingAddress(getValue(shippingAddress));
         huaweiInfo.setComputerLab(getValue(computerLab));
         huaweiInfo.setStatus(getValue(status));
@@ -200,7 +225,7 @@ public class ReadExcel {
             }
         } else if (xssfCell.getCellType() == CellType.FORMULA) {
             return "";
-        }else {
+        } else {
             return String.valueOf(xssfCell.getStringCellValue());
         }
     }
