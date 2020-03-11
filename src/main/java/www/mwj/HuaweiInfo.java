@@ -72,6 +72,10 @@ public class HuaweiInfo {
      * 备注
      */
     private String remark;
+    /**
+     * 是否改变
+     */
+    private Boolean change=false;
 
     public String getBatch() {
         return batch;
@@ -230,5 +234,13 @@ public class HuaweiInfo {
                 ", scheduledArrivalDate='" + scheduledArrivalDate + '\'' +
                 ", remark='" + remark + '\'' +
                 '}';
+    }
+
+    public Boolean getChange() {
+        return change;
+    }
+
+    public void setChange(Boolean change) {
+        this.change = change;
     }
 }

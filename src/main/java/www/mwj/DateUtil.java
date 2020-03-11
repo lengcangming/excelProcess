@@ -416,7 +416,6 @@ public class DateUtil{
     /**
      * 获取某一年各星期的始终时间
      * 实例：getWeekList(2016)，第52周(从2016-12-26至2017-01-01)
-     * @param 年份
      * @return
      */
     public static HashMap<Integer,String> getWeekTimeOfYear(int year) {
@@ -699,8 +698,8 @@ public class DateUtil{
 
     /**
      * 获得两个时间相差距离多少天多少小时多少分多少秒
-     * @param str1 时间参数 1 格式：1990-01-01 12:00:00
-     * @param str2 时间参数 2 格式：2009-01-01 12:00:00
+     * @param one 时间参数 1 格式：1990-01-01 12:00:00
+     * @param two 时间参数 2 格式：2009-01-01 12:00:00
      * @return long[] 返回值为：{天, 时, 分, 秒}
      */
     public static long[] getDistanceTime(Date one, Date two) {
@@ -767,8 +766,8 @@ public class DateUtil{
 
     /**
      * 两个时间之间相差距离多少天
-     * @param one 时间参数 1：
-     * @param two 时间参数 2：
+     * @param str1 时间参数 1：
+     * @param str2 时间参数 2：
      * @return 相差天数
      */
     public static Long getDistanceDays(String str1, String str2) throws Exception{
@@ -824,16 +823,15 @@ public class DateUtil{
         return c.getTime();
     }
 
- /*
-    public static void main(String [] args){
-        try {
-            DateUtil dateUtil = new DateUtil();
-            System.out.println();
-
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
-    }  */
-
+    /**
+     * 获取指定日期加/减一定天数后的时间字符串
+     * @param strDate
+     * @param num
+     * @return
+     */
+    public static String getAppointTime(String strDate,Integer num){
+        Date date=parseStrToDate(strDate,DATE_FORMAT_YYYY_MM_DD);
+        Date processDate=addDate(date,0,0,num,0,0,0,0);
+        return parseDateToStr(processDate,DATE_FORMAT_YYYY_MM_DD);
+    }
 }

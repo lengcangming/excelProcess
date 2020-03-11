@@ -85,6 +85,10 @@ public class AliInfo {
      */
     private String plannedArrivalDateOfThisWeek;
     /**
+     * 上周计划到机房日期
+     */
+    private String plannedArrivalDateOfLastWeek;
+    /**
      * 延期原因
      */
     private String delayReason;
@@ -92,6 +96,10 @@ public class AliInfo {
      * 备注
      */
     private String remark;
+    /**
+     * 是否改变
+     */
+    private Boolean change=false;
 
     public String getId() {
         return id;
@@ -269,6 +277,14 @@ public class AliInfo {
         this.projectNo = projectNo;
     }
 
+    public String getPlannedArrivalDateOfLastWeek() {
+        return plannedArrivalDateOfLastWeek;
+    }
+
+    public void setPlannedArrivalDateOfLastWeek(String plannedArrivalDateOfLastWeek) {
+        this.plannedArrivalDateOfLastWeek = plannedArrivalDateOfLastWeek;
+    }
+
     @Override
     public String toString() {
         return "AliInfo{" +
@@ -292,8 +308,17 @@ public class AliInfo {
                 ", status2='" + status2 + '\'' +
                 ", expectedDeliveryDateOfThisWeek='" + expectedDeliveryDateOfThisWeek + '\'' +
                 ", plannedArrivalDateOfThisWeek='" + plannedArrivalDateOfThisWeek + '\'' +
+                ", plannedArrivalDateOfLastWeek='" + plannedArrivalDateOfLastWeek + '\'' +
                 ", delayReason='" + delayReason + '\'' +
                 ", remark='" + remark + '\'' +
                 '}';
+    }
+
+    public Boolean getChange() {
+        return change;
+    }
+
+    public void setChange(Boolean change) {
+        this.change = change;
     }
 }

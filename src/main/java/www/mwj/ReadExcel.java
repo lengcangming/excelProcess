@@ -16,52 +16,25 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author MWJ 2020/3/8
  */
 public class ReadExcel {
-    public static void main(String[] args) {
-        ReadExcel obj = new ReadExcel();
-        // 此处为我创建Excel路径：E:/zhanhj/studysrc/jxl下
-        File file = new File("D:/excel/1.xlsx");
-        List<AliInfo> excelList = obj.readAliExcel(file);
-        File file2 = new File("D:/excel/2.xlsx");
-        List<HuaweiInfo> huaweiExcelList = obj.readHuaweiExcel(file2);
-        Stream<AliInfo> stream = excelList.stream();
-        List<AliInfo> filterAliList = stream.filter(s -> (s.getStatus2().equals("生产中") || s.getStatus2().equals("已发货"))).collect(Collectors.toList());
-        for (AliInfo aliInfo : filterAliList) {
-            System.out.println(aliInfo);
-            String strProjectNo = aliInfo.getProjectNo();
-            String strModel = aliInfo.getModel();
-            String strNum = aliInfo.getNum();
-            List<HuaweiInfo> filterHuaweiList = huaweiExcelList.stream().
-                    filter(s -> s.getProjectNo().equals(strProjectNo)).collect(Collectors.toList());
-            for (HuaweiInfo huaweiInfo : filterHuaweiList) {
-                String strHuaweiProjectNo=huaweiInfo.getProjectNo();
-                String strHuaweiMode=huaweiInfo.getModel();
-                String strHuaweiNum=huaweiInfo.getNum();
-                if(strHuaweiProjectNo.equals(strProjectNo)&&strHuaweiMode.equals(strModel)&&strHuaweiNum.equals(strNum)){
-                    String strHuaweiPONo=huaweiInfo.getPONo();
-                    if(strHuaweiPONo!=null||strHuaweiNum.length()>0){
-                        aliInfo.setPONo(strHuaweiPONo);
-                        aliInfo.setPOIssueDate(huaweiInfo.getPOIssueDate());
-                    }
-                    if(huaweiInfo.getExpectedCompletionDateOfGoodsPreparation()<aliInfo.getExtensionDate()){
 
-                    }
-                }
-            }
-        }
+    File feedbackFile;
+    File updateFile;
+
+    public ReadExcel(File feedbackFile, File updateFile) {
+        this.feedbackFile = feedbackFile;
+        this.updateFile = updateFile;
     }
 
-
-
-    private List<HuaweiInfo> readHuaweiExcel(File file2) {
+    // File file2 =new File("D:/excel/2.xlsx");
+    //        List<HuaweiInfo> huaweiExcelList=obj.readHuaweiExcel(file2);
+    public List<HuaweiInfo> readHuaweiExcel() {
         try {
-            InputStream is = new FileInputStream(file2.getAbsolutePath());
+            InputStream is = new FileInputStream(updateFile.getAbsolutePath());
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
             // Read the Sheet
             List<HuaweiInfo> outerList = new ArrayList<>();
@@ -74,8 +47,6 @@ public class ReadExcel {
                     HuaweiInfo huaweiInfo = null;
                     // Read the Row
                     for (int i = 1; i <= xssfSheet.getLastRowNum(); i++) {
-//                        System.out.println(xssfSheet.getPhysicalNumberOfRows());
-//                        System.out.println(xssfSheet.getLastRowNum());
                         XSSFRow xssfRow = xssfSheet.getRow(i);
                         if (xssfRow != null) {
                             huaweiInfo = new HuaweiInfo();
@@ -130,9 +101,9 @@ public class ReadExcel {
     }
 
     // 去读Excel的方法readExcel，该方法的入口参数为一个File对象
-    public List<AliInfo> readAliExcel(File file) {
+    public List<AliInfo> readAliExcel() {
         try {
-            InputStream is = new FileInputStream(file.getAbsolutePath());
+            InputStream is = new FileInputStream(feedbackFile.getAbsolutePath());
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
             List list = new ArrayList();
             // Read the Sheet
@@ -181,8 +152,9 @@ public class ReadExcel {
         XSSFCell status2 = xssfRow.getCell(17);
         XSSFCell expectedDeliveryDateOfThisWeek = xssfRow.getCell(18);
         XSSFCell plannedArrivalDateOfThisWeek = xssfRow.getCell(19);
-        XSSFCell delayReason = xssfRow.getCell(20);
-        XSSFCell remark = xssfRow.getCell(21);
+        XSSFCell plannedArrivalDateOfLastWeek = xssfRow.getCell(20);
+        XSSFCell delayReason = xssfRow.getCell(21);
+        XSSFCell remark = xssfRow.getCell(22);
         aliInfo.setId(getValue(id));
         aliInfo.setCountry(getValue(country));
         aliInfo.setCity(getValue(city));
@@ -203,6 +175,7 @@ public class ReadExcel {
         aliInfo.setStatus2(getValue(status2));
         aliInfo.setExpectedDeliveryDateOfThisWeek(getValue(expectedDeliveryDateOfThisWeek));
         aliInfo.setPlannedArrivalDateOfThisWeek(getValue(plannedArrivalDateOfThisWeek));
+        aliInfo.setPlannedArrivalDateOfLastWeek(getValue(plannedArrivalDateOfLastWeek));
         aliInfo.setDelayReason(getValue(delayReason));
         aliInfo.setRemark(getValue(remark));
     }
