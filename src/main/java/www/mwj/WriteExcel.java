@@ -55,7 +55,7 @@ public class WriteExcel {
                 // 得到要插入的每一条记录
 
                 AliInfo aliInfo = aliInfos.get(j);
-                for (int k = 0; k <= columnNumCount; k++) {
+                for (int k = 0; k < columnNumCount; k++) {
                     Field f = fields[k];
                     f.setAccessible(true);
                     Cell cell = row.createCell(k);
@@ -126,7 +126,7 @@ public class WriteExcel {
                 // 得到要插入的每一条记录
 
                 HuaweiInfo huaweiInfo = huaweiInfos.get(j);
-                for (int k = 0; k <= columnNumCount; k++) {
+                for (int k = 0; k < columnNumCount; k++) {
                     Field f = fields[k];
                     f.setAccessible(true);
                     Cell cell = row.createCell(k);
