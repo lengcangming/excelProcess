@@ -1,20 +1,18 @@
-package www.mwj;
+package www.mwj.action;
 
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import www.mwj.pojo.AliInfo;
+import www.mwj.pojo.HuaweiInfo;
+import www.mwj.util.StrUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,8 +20,8 @@ import java.util.List;
  */
 public class ReadExcel {
 
-    File feedbackFile;
-    File updateFile;
+    private File feedbackFile;
+    private File updateFile;
 
     public ReadExcel(File feedbackFile, File updateFile) {
         this.feedbackFile = feedbackFile;
@@ -44,7 +42,7 @@ public class ReadExcel {
                     if (xssfSheet == null) {
                         continue;
                     }
-                    HuaweiInfo huaweiInfo = null;
+                    HuaweiInfo huaweiInfo;
                     // Read the Row
                     for (int i = 1; i <= xssfSheet.getLastRowNum(); i++) {
                         XSSFRow xssfRow = xssfSheet.getRow(i);
@@ -81,23 +79,23 @@ public class ReadExcel {
         XSSFCell businessControlled = xssfRow.getCell(14);
         XSSFCell scheduledArrivalDate = xssfRow.getCell(15);
         XSSFCell remark = xssfRow.getCell(16);
-        huaweiInfo.setBatch(getValue(batch));
-        huaweiInfo.setPONo(getValue(PONo));
-        huaweiInfo.setProjectNo(getValue(projectNo));
-        huaweiInfo.setPOIssueDate(getValue(POIssueDate));
-        huaweiInfo.setHuaweiContractNumber(getValue(huaweiContractNumber));
-        huaweiInfo.setItemName(getValue(itemName));
-        huaweiInfo.setModel(getValue(model));
-        huaweiInfo.setNum(getValue(num));
-        huaweiInfo.setShippingAddress(getValue(shippingAddress));
-        huaweiInfo.setComputerLab(getValue(computerLab));
-        huaweiInfo.setStatus(getValue(status));
-        huaweiInfo.setExpectedDeliveryDate(getValue(expectedDeliveryDate));
-        huaweiInfo.setExpectedCompletionDateOfGoodsPreparation(getValue(expectedCompletionDateOfGoodsPreparation));
-        huaweiInfo.setEstimateArrivalDate(getValue(estimateArrivalDate));
-        huaweiInfo.setBusinessControlled(getValue(businessControlled));
-        huaweiInfo.setScheduledArrivalDate(getValue(scheduledArrivalDate));
-        huaweiInfo.setRemark(getValue(remark));
+        huaweiInfo.setBatch(StrUtil.getValue(batch));
+        huaweiInfo.setPONo(StrUtil.getValue(PONo));
+        huaweiInfo.setProjectNo(StrUtil.getValue(projectNo));
+        huaweiInfo.setPOIssueDate(StrUtil.getValue(POIssueDate));
+        huaweiInfo.setHuaweiContractNumber(StrUtil.getValue(huaweiContractNumber));
+        huaweiInfo.setItemName(StrUtil.getValue(itemName));
+        huaweiInfo.setModel(StrUtil.getValue(model));
+        huaweiInfo.setNum(StrUtil.getValue(num));
+        huaweiInfo.setShippingAddress(StrUtil.getValue(shippingAddress));
+        huaweiInfo.setComputerLab(StrUtil.getValue(computerLab));
+        huaweiInfo.setStatus(StrUtil.getValue(status));
+        huaweiInfo.setExpectedDeliveryDate(StrUtil.getValue(expectedDeliveryDate));
+        huaweiInfo.setExpectedCompletionDateOfGoodsPreparation(StrUtil.getValue(expectedCompletionDateOfGoodsPreparation));
+        huaweiInfo.setEstimateArrivalDate(StrUtil.getValue(estimateArrivalDate));
+        huaweiInfo.setBusinessControlled(StrUtil.getValue(businessControlled));
+        huaweiInfo.setScheduledArrivalDate(StrUtil.getValue(scheduledArrivalDate));
+        huaweiInfo.setRemark(StrUtil.getValue(remark));
     }
 
     // 去读Excel的方法readExcel，该方法的入口参数为一个File对象
@@ -105,15 +103,14 @@ public class ReadExcel {
         try {
             InputStream is = new FileInputStream(feedbackFile.getAbsolutePath());
             XSSFWorkbook xssfWorkbook = new XSSFWorkbook(is);
-            List list = new ArrayList();
             // Read the Sheet
             for (int numSheet = 0; numSheet < xssfWorkbook.getNumberOfSheets(); numSheet++) {
                 XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
                 if (xssfSheet == null) {
                     continue;
                 }
-                List<AliInfo> outerList = new ArrayList();
-                AliInfo aliInfo = null;
+                List<AliInfo> outerList = new ArrayList<>();
+                AliInfo aliInfo;
                 // Read the Row
                 for (int i = 1; i <= xssfSheet.getLastRowNum(); i++) {
                     XSSFRow xssfRow = xssfSheet.getRow(i);
@@ -155,58 +152,29 @@ public class ReadExcel {
         XSSFCell plannedArrivalDateOfLastWeek = xssfRow.getCell(20);
         XSSFCell delayReason = xssfRow.getCell(21);
         XSSFCell remark = xssfRow.getCell(22);
-        aliInfo.setId(getValue(id));
-        aliInfo.setCountry(getValue(country));
-        aliInfo.setCity(getValue(city));
-        aliInfo.setComputerLab(getValue(computerLab));
-        aliInfo.setProjectName(getValue(projectName));
-        aliInfo.setProjectNo(getValue(projectNo));
-        aliInfo.setGoodsAttribute(getValue(goodsAttribute));
-        aliInfo.setBrand(getValue(brand));
-        aliInfo.setModel(getValue(model));
-        aliInfo.setStatus(getValue(status));
-        aliInfo.setNum(getValue(num));
-        aliInfo.setExpectedDeliveryDate(getValue(expectedDeliveryDate));
-        aliInfo.setExtensionDate(getValue(extensionDate));
-        aliInfo.setQuantityDeliveredOnSchedule(getValue(quantityDeliveredOnSchedule));
-        aliInfo.setBusinessCategory(getValue(businessCategory));
-        aliInfo.setPONo(getValue(PONo));
-        aliInfo.setPOIssueDate(getValue(POIssueDate));
-        aliInfo.setStatus2(getValue(status2));
-        aliInfo.setExpectedDeliveryDateOfThisWeek(getValue(expectedDeliveryDateOfThisWeek));
-        aliInfo.setPlannedArrivalDateOfThisWeek(getValue(plannedArrivalDateOfThisWeek));
-        aliInfo.setPlannedArrivalDateOfLastWeek(getValue(plannedArrivalDateOfLastWeek));
-        aliInfo.setDelayReason(getValue(delayReason));
-        aliInfo.setRemark(getValue(remark));
+        aliInfo.setId(StrUtil.getValue(id));
+        aliInfo.setCountry(StrUtil.getValue(country));
+        aliInfo.setCity(StrUtil.getValue(city));
+        aliInfo.setComputerLab(StrUtil.getValue(computerLab));
+        aliInfo.setProjectName(StrUtil.getValue(projectName));
+        aliInfo.setProjectNo(StrUtil.getValue(projectNo));
+        aliInfo.setGoodsAttribute(StrUtil.getValue(goodsAttribute));
+        aliInfo.setBrand(StrUtil.getValue(brand));
+        aliInfo.setModel(StrUtil.getValue(model));
+        aliInfo.setStatus(StrUtil.getValue(status));
+        aliInfo.setNum(StrUtil.getValue(num));
+        aliInfo.setExpectedDeliveryDate(StrUtil.getValue(expectedDeliveryDate));
+        aliInfo.setExtensionDate(StrUtil.getValue(extensionDate));
+        aliInfo.setQuantityDeliveredOnSchedule(StrUtil.getValue(quantityDeliveredOnSchedule));
+        aliInfo.setBusinessCategory(StrUtil.getValue(businessCategory));
+        aliInfo.setPONo(StrUtil.getValue(PONo));
+        aliInfo.setPOIssueDate(StrUtil.getValue(POIssueDate));
+        aliInfo.setStatus2(StrUtil.getValue(status2));
+        aliInfo.setExpectedDeliveryDateOfThisWeek(StrUtil.getValue(expectedDeliveryDateOfThisWeek));
+        aliInfo.setPlannedArrivalDateOfThisWeek(StrUtil.getValue(plannedArrivalDateOfThisWeek));
+        aliInfo.setPlannedArrivalDateOfLastWeek(StrUtil.getValue(plannedArrivalDateOfLastWeek));
+        aliInfo.setDelayReason(StrUtil.getValue(delayReason));
+        aliInfo.setRemark(StrUtil.getValue(remark));
     }
 
-    @SuppressWarnings("static-access")
-    private String getValue(XSSFCell xssfCell) {
-        if (isCellEmpty(xssfCell)) {
-            return "";
-        }
-        if (xssfCell.getCellType() == CellType.BOOLEAN) {
-            return String.valueOf(xssfCell.getBooleanCellValue());
-        } else if (xssfCell.getCellType() == CellType.NUMERIC) {
-            if (DateUtil.isCellDateFormatted(xssfCell)) {
-                Date d = xssfCell.getDateCellValue();
-                DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
-                return String.valueOf(formater.format(d));
-            } else {
-                xssfCell.setCellType(CellType.STRING);
-                return String.valueOf(xssfCell.getStringCellValue());
-            }
-        } else if (xssfCell.getCellType() == CellType.FORMULA) {
-            return "";
-        } else {
-            return String.valueOf(xssfCell.getStringCellValue());
-        }
-    }
-
-    private static boolean isCellEmpty(final XSSFCell cell) {
-        if (cell == null || cell.getCellType() == CellType.BLANK) {
-            return true;
-        }
-        return cell.getCellType() == CellType.STRING && cell.getStringCellValue().isEmpty();
-    }
 }

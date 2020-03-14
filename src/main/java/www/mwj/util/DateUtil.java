@@ -1,4 +1,4 @@
-package www.mwj;
+package www.mwj.util;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -825,9 +825,6 @@ public class DateUtil{
 
     /**
      * 获取指定日期加/减一定天数后的时间字符串
-     * @param strDate
-     * @param num
-     * @return
      */
     public static String getAppointTime(String strDate,Integer num){
         Date date=parseStrToDate(strDate,DATE_FORMAT_YYYY_MM_DD);

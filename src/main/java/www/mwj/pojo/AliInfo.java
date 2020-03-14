@@ -1,4 +1,4 @@
-package www.mwj;
+package www.mwj.pojo;
 
 /**
  * @author MWJ 2020/3/8

@@ -1,8 +1,10 @@
-package www.mwj;
+package www.mwj.action;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import www.mwj.pojo.AliInfo;
+import www.mwj.pojo.HuaweiInfo;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -15,8 +17,8 @@ public class WriteExcel {
     private static final String EXCEL_XLS = "xls";
     private static final String EXCEL_XLSX = "xlsx";
 
-    List<AliInfo> aliInfos;
-    List<HuaweiInfo> huaweiInfos;
+    private List<AliInfo> aliInfos;
+    private List<HuaweiInfo> huaweiInfos;
 
     public WriteExcel(List<AliInfo> aliInfos, List<HuaweiInfo> huaweiInfos) {
         this.aliInfos = aliInfos;
@@ -31,9 +33,6 @@ public class WriteExcel {
             Workbook workBook = getWorkbok(finalXlsxFile);
             // sheet 对应一个工作页
             Sheet sheet = workBook.getSheetAt(0);
-            /**
-             * 删除原有数据，除了属性列
-             */
             int rowNumber = sheet.getLastRowNum();    // 第一行从0开始算
             System.out.println("原始数据总行数，除属性列：" + rowNumber);
             for (int i = 1; i <= rowNumber; i++) {
@@ -46,31 +45,13 @@ public class WriteExcel {
             Field[] fields = AliInfo.class.getDeclaredFields();
             // 获取总列数
             int columnNumCount = fields.length - 1;
-            /**
-             * 往Excel中写新数据
-             */
             for (int j = 0; j < aliInfos.size(); j++) {
                 // 创建一行：从第二行开始，跳过属性列
                 Row row = sheet.createRow(j + 1);
                 // 得到要插入的每一条记录
 
                 AliInfo aliInfo = aliInfos.get(j);
-                for (int k = 0; k < columnNumCount; k++) {
-                    Field f = fields[k];
-                    f.setAccessible(true);
-                    Cell cell = row.createCell(k);
-                    cell.setCellValue(String.valueOf(f.get(aliInfo)));
-                    if (aliInfo.getChange()) {
-                        //设置样式-颜色
-                        CellStyle style = workBook.createCellStyle();
-                        //设置填充方案
-                        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                        //设置自定义填充颜色
-                        style.setFillForegroundColor(IndexedColors.RED.getIndex());
-                        cell.setCellStyle(style);
-                    }
-                }
-
+                getRowContent(aliInfo,columnNumCount,fields,row,workBook);
             }
             // 创建文件输出流，准备输出电子表格：这个必须有，否则你在sheet上做的任何操作都不会有效
             out = new FileOutputStream(aliPath);
@@ -102,9 +83,6 @@ public class WriteExcel {
             Workbook workBook = getWorkbok(finalXlsxFile);
             // sheet 对应一个工作页
             Sheet sheet = workBook.getSheetAt(0);
-            /**
-             * 删除原有数据，除了属性列
-             */
             int rowNumber = sheet.getLastRowNum();    // 第一行从0开始算
             System.out.println("原始数据总行数，除属性列：" + rowNumber);
             for (int i = 1; i <= rowNumber; i++) {
@@ -117,31 +95,12 @@ public class WriteExcel {
             Field[] fields = HuaweiInfo.class.getDeclaredFields();
             // 获取总列数
             int columnNumCount = fields.length - 1;
-            /**
-             * 往Excel中写新数据
-             */
             for (int j = 0; j < huaweiInfos.size(); j++) {
                 // 创建一行：从第二行开始，跳过属性列
                 Row row = sheet.createRow(j + 1);
                 // 得到要插入的每一条记录
-
                 HuaweiInfo huaweiInfo = huaweiInfos.get(j);
-                for (int k = 0; k < columnNumCount; k++) {
-                    Field f = fields[k];
-                    f.setAccessible(true);
-                    Cell cell = row.createCell(k);
-                    cell.setCellValue(String.valueOf(f.get(huaweiInfo)));
-                    if (huaweiInfo.getChange()) {
-                        //设置样式-颜色
-                        CellStyle style = workBook.createCellStyle();
-                        //设置填充方案
-                        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-                        //设置自定义填充颜色
-                        style.setFillForegroundColor(IndexedColors.RED.getIndex());
-                        cell.setCellStyle(style);
-                    }
-                }
-
+                getRowContent(huaweiInfo,columnNumCount,fields,row,workBook);
             }
             // 创建文件输出流，准备输出电子表格：这个必须有，否则你在sheet上做的任何操作都不会有效
             out = new FileOutputStream(huaweiPath);
@@ -154,14 +113,48 @@ public class WriteExcel {
         System.out.println("华为更新表数据导出成功");
     }
 
+    private void getRowContent(Object obj,int columnNumCount,Field[] fields,Row row,Workbook workBook) throws IllegalAccessException {
+        if(obj instanceof HuaweiInfo){
+            HuaweiInfo target=(HuaweiInfo)obj;
+            for (int k = 0; k < columnNumCount; k++) {
+                Field f = fields[k];
+                f.setAccessible(true);
+                Cell cell = row.createCell(k);
+                cell.setCellValue(String.valueOf(f.get(target)));
+                if (target.getChange()) {
+                    //设置样式-颜色
+                    CellStyle style = workBook.createCellStyle();
+                    //设置填充方案
+                    style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                    //设置自定义填充颜色
+                    style.setFillForegroundColor(IndexedColors.RED.getIndex());
+                    cell.setCellStyle(style);
+                }
+            }
+        }else if(obj instanceof AliInfo){
+            AliInfo target=(AliInfo)obj;
+            for (int k = 0; k < columnNumCount; k++) {
+                Field f = fields[k];
+                f.setAccessible(true);
+                Cell cell = row.createCell(k);
+                cell.setCellValue(String.valueOf(f.get(target)));
+                if (target.getChange()) {
+                    //设置样式-颜色
+                    CellStyle style = workBook.createCellStyle();
+                    //设置填充方案
+                    style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+                    //设置自定义填充颜色
+                    style.setFillForegroundColor(IndexedColors.RED.getIndex());
+                    cell.setCellStyle(style);
+                }
+            }
+        }
+    }
+
     /**
      * 判断Excel的版本,获取Workbook
-     *
-     * @param file
-     * @return
-     * @throws IOException
      */
-    public static Workbook getWorkbok(File file) throws IOException {
+    private static Workbook getWorkbok(File file) throws IOException {
         Workbook wb = null;
         FileInputStream in = new FileInputStream(file);
         if (file.getName().endsWith(EXCEL_XLS)) {     //Excel&nbsp;2003

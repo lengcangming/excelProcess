@@ -1,6 +1,10 @@
-package www.mwj;
+package www.mwj.action;
 
-import java.io.File;
+import www.mwj.util.DateUtil;
+import www.mwj.util.StrUtil;
+import www.mwj.pojo.AliInfo;
+import www.mwj.pojo.HuaweiInfo;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,8 +14,8 @@ import java.util.stream.Stream;
  */
 public class ProcessExcel {
 
-    List<AliInfo> aliInfos;
-    List<HuaweiInfo> huaweiInfos;
+    private List<AliInfo> aliInfos;
+    private List<HuaweiInfo> huaweiInfos;
 
     public ProcessExcel(List<AliInfo> aliInfos, List<HuaweiInfo> huaweiInfos) {
         this.aliInfos = aliInfos;

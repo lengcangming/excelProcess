@@ -1,4 +1,4 @@
-package www.mwj;
+package www.mwj.util;
 
 import jxl.Sheet;
 import jxl.Workbook;
